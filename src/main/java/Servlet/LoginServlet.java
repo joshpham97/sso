@@ -25,15 +25,23 @@ public class LoginServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Context context = new Context();
-        context.setSsoManager(SSOType.Microsoft);
-        session.setAttribute("Context", context);
+        String strSsoType = request.getParameter("sso");
 
-        SSOManagerFactory ssoManager = context.getSsoManager();
-        String authorizationURL = ssoManager.getAuthorizationURL();
+        if(strSsoType != null){
+            SSOType ssoType = SSOType.valueOf(strSsoType);
 
-        if (authorizationURL != null)
-            response.sendRedirect(authorizationURL);
+            HttpSession session = request.getSession();
+            Context context = new Context();
+            context.setSsoManager(ssoType);
+            session.setAttribute("Context", context);
+
+            SSOManagerFactory ssoManager = context.getSsoManager();
+            String authorizationURL = ssoManager.getAuthorizationURL();
+
+            if (authorizationURL != null)
+                response.sendRedirect(authorizationURL);
+        }
+
+
     }
 }

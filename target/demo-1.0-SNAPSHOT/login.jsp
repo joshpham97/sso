@@ -11,6 +11,6 @@
     <title>Title</title>
 </head>
 <body>
-    <a href="LoginServlet">Login with Office</a>
+    <a href="LoginServlet?sso=Microsoft">Login with Office</a>
 </body>
 </html>
