@@ -11,6 +11,10 @@
     <title>Title</title>
 </head>
 <body>
+<% if (session.getAttribute("userName") == null) {%>
+<jsp:forward page="/login.jsp"/>
+<% } %>
     <span>Login successfully</span>
+<h3>Welcome  ${userName}</h3>
 </body>
 </html>

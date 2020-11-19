@@ -1,9 +1,7 @@
 package Servlet;
 
-import App.Contact;
-import App.Context;
-import App.SSOManagerFactory;
-import App.SSOType;
+import App.*;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.microsoft.aad.msal4j.HttpRequest;
 
 import java.io.IOException;
@@ -22,6 +20,24 @@ import java.io.IOException;
 public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        response.setContentType("text/html");
+
+        try {
+            String idToken = request.getParameter("id_token");
+            GoogleIdToken.Payload payLoad = IdTokenVerifierAndParser.getPayload(idToken);
+            String name = (String) payLoad.get("name");
+            String email = payLoad.getEmail();
+            System.out.println("User name: " + name);
+            System.out.println("User email: " + email);
+
+            HttpSession session = request.getSession(true);
+            session.setAttribute("userName", name);
+            request.getServletContext()
+                    .getRequestDispatcher("index.jsp").forward(request, response);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
