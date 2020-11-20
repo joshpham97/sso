@@ -31,7 +31,7 @@ public abstract class SSOManagerFactory {
     public abstract void getAccessToken(String code);
 
     //Not sure if ids are string or int -- you can change the signature as need
-    public abstract boolean getContacts(int id);
+    public abstract boolean getContacts();
     public abstract boolean createContact(Contact contact);
     public abstract boolean getContact(int id);
     public abstract boolean updateContact(Contact contact);

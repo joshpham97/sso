@@ -17,7 +17,7 @@ public class GoogleSSOManager extends SSOManagerFactory {
     }
 
     @Override
-    public boolean getContacts(int id) {
+    public boolean getContacts() {
         return false;
     }
 
