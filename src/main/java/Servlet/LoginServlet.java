@@ -19,25 +19,7 @@ import java.io.IOException;
 @WebServlet(name = "oAuthServlet")
 public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html");
 
-        try {
-            String idToken = request.getParameter("id_token");
-            GoogleIdToken.Payload payLoad = IdTokenVerifierAndParser.getPayload(idToken);
-            String name = (String) payLoad.get("name");
-            String email = payLoad.getEmail();
-            System.out.println("User name: " + name);
-            System.out.println("User email: " + email);
-
-            HttpSession session = request.getSession(true);
-            session.setAttribute("userName", name);
-            System.out.println("NAME: " + name);
-            request.getServletContext()
-                    .getRequestDispatcher("index.jsp").forward(request, response);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -8,7 +8,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <jsp:include page="/ContactServlet" />
-<jsp:useBean id="connections" scope="request" type="java.util.List<com.google.api.services.people.v1.model.Person>" />
+<jsp:useBean id="contacts" scope="request" type="java.util.List<App.Contact>" />
 <html>
 <head>
     <title>Contacts</title>
@@ -19,16 +19,24 @@
     </div>
 
     <div>
-        <c:forEach items="${connections}" var="person">
+        <c:forEach items="${contacts}" var="contact">
             <div>
                 <span>
-                        ${person.names.get(0).displayName}
+                        ${contact.firstName} ${contact.lastName}
                 </span>
                 <span>
-                    ${person.phoneNumbers.get(0).value}
+                    ${contact.phoneNumber}
                 </span>
                 <span>
-                    ${person.resourceName}
+                    ${contact.email}
+                </span>
+                <span>
+                    <a href="edit.jsp?action=edit&resourceName=${contact.resourceName}"><button>Edit</button></a>
+
+                    <form method="post" action="ContactServlet" style="display: inline;">
+                        <input type="hidden" name="resourceName" value="${contact.resourceName}" />
+                        <button name="action" value="delete"">Delete</a>
+                    </forM>
                 </span>
             </div>
         </c:forEach>

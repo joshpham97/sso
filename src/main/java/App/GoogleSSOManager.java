@@ -23,6 +23,7 @@ import net.minidev.json.parser.JSONParser;
 import javax.servlet.http.HttpSession;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -110,8 +111,19 @@ public class GoogleSSOManager extends SSOManagerFactory {
     }
 
     @Override
-    public boolean getContacts(int id) {
-        return false;
+    public List<Contact> getContacts(int id) {
+        try {
+            ListConnectionsResponse response = peopleService.people().connections()
+                    .list("people/me")
+                    .setPersonFields("names,phoneNumbers,emailAddresses")
+                    .execute();
+
+            return toContactList(response.getConnections());
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     @Override
@@ -120,48 +132,57 @@ public class GoogleSSOManager extends SSOManagerFactory {
     }
 
     @Override
-    public boolean getContact(int id) {
-        return false;
+    public Contact getContact(int id, String resourceName) {
+        try {
+            Person person = peopleService.people()
+                    .get(resourceName)
+                    .setPersonFields("names,phoneNumbers,emailAddresses")
+                    .execute();
+
+            return toContact(person);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     @Override
     public boolean updateContact(Contact contact) {
+        try {
+            Person person = new Person();
+
+            person.setNames(Arrays.asList(new Name().setGivenName(contact.getFirstName()).setFamilyName(contact.getLastName())));
+            person.setPhoneNumbers(Arrays.asList(new PhoneNumber().setValue(contact.getPhoneNumber())));
+            person.setEmailAddresses(Arrays.asList(new EmailAddress().setValue(contact.getEmail())));
+            person.setEtag(contact.getEtag());
+
+            Person createdContact = peopleService.people()
+                    .updateContact(contact.getResourceName(), person)
+                    .setUpdatePersonFields("names,phoneNumbers,emailAddresses")
+                    .execute();
+
+            return toContact(createdContact) != null;
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
         return false;
     }
 
     @Override
-    public boolean deleteContact(int id) {
+    public boolean deleteContact(int id, String resourceName) {
+        try {
+            Empty response = peopleService.people()
+                    .deleteContact(resourceName)
+                    .execute();
+
+            return response.isEmpty();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
         return false;
-    }
-
-    public List<Person> getContacts() {
-        try {
-            ListConnectionsResponse response = peopleService.people().connections()
-                    .list("people/me")
-                    .setPersonFields("names,phoneNumbers")
-                    .execute();
-
-            return response.getConnections();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public Person getContact(String resourceName) {
-        try {
-            Person person = peopleService.people()
-                    .get(resourceName)
-                    .setPersonFields("names")
-                    .execute();
-
-            return person;
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
     }
 
     // TODO: finish
@@ -182,28 +203,26 @@ public class GoogleSSOManager extends SSOManagerFactory {
         return false;
     }
 
-    // TODO: do
-    public Person editContact(Person person) {
-        try {
+    private Contact toContact(Person person) {
+        Contact contact = new Contact();
 
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+        contact.setFirstName(person.getNames().get(0).getGivenName());
+        contact.setLastName(person.getNames().get(0).getFamilyName());
+        contact.setPhoneNumber(person.getPhoneNumbers().get(0).getValue());
+        contact.setEmail(person.getEmailAddresses().get(0).getValue());
+        contact.setResourceName(person.getResourceName());
+        contact.setEtag(person.getEtag());
 
-        return null;
+        return contact;
     }
 
-    public boolean deleteContact(String resourceName) {
-        try {
-            Empty response = peopleService.people()
-                    .deleteContact(resourceName)
-                    .execute();
+    private List<Contact> toContactList(List<Person> people) {
+        ArrayList<Contact> contacts = new ArrayList<>();
 
-            return response.isEmpty();
-        } catch(Exception e) {
-            e.printStackTrace();
+        for (Person p: people) {
+            contacts.add(toContact(p));
         }
 
-        return false;
+        return contacts;
     }
 }
