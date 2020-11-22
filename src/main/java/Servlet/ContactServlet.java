@@ -19,10 +19,12 @@ public class ContactServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
+        Context context = (Context) request.getSession().getAttribute("Context");
+        SSOManagerFactory ssoManager = context.getSsoManager();
 
         Contact contact = new Contact(firstName, lastName);
-        GoogleSSOManager manager = new GoogleSSOManager();
-        if(manager.createContact(contact))
+        GoogleSSOManager googleSSOManager = (GoogleSSOManager) ssoManager;
+        if(googleSSOManager.createContact(contact))
         {
             System.out.println("Contact has been created!");
         }
@@ -30,6 +32,7 @@ public class ContactServlet extends HttpServlet {
         {
             System.out.println("Error!");
         }
+        response.sendRedirect("index.jsp");
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
