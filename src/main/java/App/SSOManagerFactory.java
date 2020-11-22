@@ -1,5 +1,8 @@
 package App;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 public abstract class SSOManagerFactory {
     String refresh_token;
 
@@ -26,7 +29,7 @@ public abstract class SSOManagerFactory {
     }
 
     //Methods to be implemented
-    public abstract boolean login();
+    public abstract boolean login(HttpSession session);
     public abstract String getAuthorizationURL();
     public abstract void getAccessToken(String code);
 

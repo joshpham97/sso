@@ -23,7 +23,7 @@ public class AuthorizationServlet extends HttpServlet {
             Context context = (Context) request.getSession().getAttribute("Context");
             SSOManagerFactory ssoManager = context.getSsoManager();
             ssoManager.getAccessToken(oAuthCode);
-            ssoManager.login();
+            ssoManager.login(request.getSession(true));
 
             response.sendRedirect("index.jsp");
         }

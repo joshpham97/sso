@@ -1,5 +1,9 @@
 {
+  "app.name": "SOEN 387 POC",
   "app.id": "ef310654-4c9e-4c10-9537-fbc577b2495a",
   "app.scopes": "openid,User.Read,Calendars.Read",
-  "app.secret": "T1e3Xpxxjnc8Nl_Wa1iw96-0c.Y1Ab2t.A"
+  "app.secret": "T1e3Xpxxjnc8Nl_Wa1iw96-0c.Y1Ab2t.A",
+  "google.id": "346761516838-7163hqhg0pu7cq5gfb34kn225g9lovqr.apps.googleusercontent.com",
+  "google.scopes": "https://www.googleapis.com/auth/userinfo.profile",
+  "google.secret": "QfhzYRJl6FFkKE9YGoi-o34q"
 }

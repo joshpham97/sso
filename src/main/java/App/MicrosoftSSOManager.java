@@ -12,6 +12,7 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
+import javax.servlet.http.HttpSession;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -60,7 +61,7 @@ public class MicrosoftSSOManager extends SSOManagerFactory {
     }
 
     @Override
-    public boolean login() {
+    public boolean login(HttpSession session) {
         //Just some sample code to test -- DO NOT use HTTP Request like this, use the JAVA LIBRARY FOR CONTACTS!
         final OAuthRequest request = new OAuthRequest(Verb.GET, "https://graph.microsoft.com/v1.0/me");
         service.signRequest(accessToken, request);
