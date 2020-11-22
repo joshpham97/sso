@@ -4,6 +4,6 @@
   "app.scopes": "openid,User.Read,Calendars.Read",
   "app.secret": "T1e3Xpxxjnc8Nl_Wa1iw96-0c.Y1Ab2t.A",
   "google.id": "346761516838-7163hqhg0pu7cq5gfb34kn225g9lovqr.apps.googleusercontent.com",
-  "google.scopes": "https://www.googleapis.com/auth/userinfo.profile",
+  "google.scopes": "https://www.googleapis.com/auth/contacts",
   "google.secret": "QfhzYRJl6FFkKE9YGoi-o34q"
 }

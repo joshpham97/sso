@@ -61,7 +61,7 @@ public class MicrosoftSSOManager extends SSOManagerFactory {
     }
 
     @Override
-    public boolean login(HttpSession session) {
+    public boolean login() {
         //Just some sample code to test -- DO NOT use HTTP Request like this, use the JAVA LIBRARY FOR CONTACTS!
         final OAuthRequest request = new OAuthRequest(Verb.GET, "https://graph.microsoft.com/v1.0/me");
         service.signRequest(accessToken, request);

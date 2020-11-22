@@ -16,16 +16,14 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.people.v1.PeopleService;
 import com.google.api.services.people.v1.PeopleServiceRequest;
 import com.google.api.services.people.v1.PeopleServiceRequestInitializer;
-import com.google.api.services.people.v1.model.ListConnectionsResponse;
-import com.google.api.services.people.v1.model.ListDirectoryPeopleResponse;
-import com.google.api.services.people.v1.model.Name;
-import com.google.api.services.people.v1.model.Person;
+import com.google.api.services.people.v1.model.*;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 
 import javax.servlet.http.HttpSession;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.List;
 
 public class GoogleSSOManager extends SSOManagerFactory {
@@ -78,7 +76,7 @@ public class GoogleSSOManager extends SSOManagerFactory {
     }
 
     @Override
-    public boolean login(HttpSession session) {
+    public boolean login() {
         try {
             Credential credentials = new GoogleCredential().setAccessToken(accessToken.getAccessToken());
 
@@ -86,13 +84,6 @@ public class GoogleSSOManager extends SSOManagerFactory {
                     .Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, credentials)
                     .setApplicationName(appName)
                     .build();
-
-            Person person = peopleService.people()
-                    .get("people/me")
-                    .setPersonFields("names")
-                    .execute();
-
-            session.setAttribute("displayName", person.getNames().get(0).getDisplayName());
 
             return true;
         } catch(Exception e) {
@@ -102,20 +93,24 @@ public class GoogleSSOManager extends SSOManagerFactory {
         return false;
     }
 
-    @Override
-    public boolean getContacts(int id) {
+    public Person getSelf() {
         try {
-            ListConnectionsResponse response = peopleService.people().connections()
-                    .list("people/me")
+            Person person = peopleService.people()
+                    .get("people/me")
                     .setPersonFields("names")
                     .execute();
 
-            System.out.println(response);
-
-            return true;
+//        session.setAttribute("displayName", person.getNames().get(0).getDisplayName());
+            return person;
         } catch(Exception e) {
             e.printStackTrace();
         }
+
+        return null;
+    }
+
+    @Override
+    public boolean getContacts(int id) {
         return false;
     }
 
@@ -136,6 +131,79 @@ public class GoogleSSOManager extends SSOManagerFactory {
 
     @Override
     public boolean deleteContact(int id) {
+        return false;
+    }
+
+    public List<Person> getContacts() {
+        try {
+            ListConnectionsResponse response = peopleService.people().connections()
+                    .list("people/me")
+                    .setPersonFields("names,phoneNumbers")
+                    .execute();
+
+            return response.getConnections();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public Person getContact(String resourceName) {
+        try {
+            Person person = peopleService.people()
+                    .get(resourceName)
+                    .setPersonFields("names")
+                    .execute();
+
+            return person;
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    // TODO: finish
+    public boolean addContact(Person person, String name) {
+        try {
+//            Person newPerson = new Person()
+//                    .setNames(Arrays.asList());
+
+            Person personResponse = peopleService.people().createContact(person)
+                    .setPersonFields("names,phoneNumbers")
+                    .execute();
+
+            return personResponse != null;
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    // TODO: do
+    public Person editContact(Person person) {
+        try {
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public boolean deleteContact(String resourceName) {
+        try {
+            Empty response = peopleService.people()
+                    .deleteContact(resourceName)
+                    .execute();
+
+            return response.isEmpty();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
         return false;
     }
 }

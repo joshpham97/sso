@@ -29,7 +29,7 @@ public abstract class SSOManagerFactory {
     }
 
     //Methods to be implemented
-    public abstract boolean login(HttpSession session);
+    public abstract boolean login();
     public abstract String getAuthorizationURL();
     public abstract void getAccessToken(String code);
 
