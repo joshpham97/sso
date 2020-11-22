@@ -1,5 +1,8 @@
 package App;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 public abstract class SSOManagerFactory {
     String refresh_token;
 

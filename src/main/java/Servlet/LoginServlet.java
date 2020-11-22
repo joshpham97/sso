@@ -19,7 +19,6 @@ import java.io.IOException;
 @WebServlet(name = "oAuthServlet")
 public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         response.setContentType("text/html");
 
         try {
@@ -32,6 +31,7 @@ public class LoginServlet extends HttpServlet {
 
             HttpSession session = request.getSession(true);
             session.setAttribute("userName", name);
+            System.out.println("NAME: " + name);
             request.getServletContext()
                     .getRequestDispatcher("index.jsp").forward(request, response);
 
@@ -57,7 +57,5 @@ public class LoginServlet extends HttpServlet {
             if (authorizationURL != null)
                 response.sendRedirect(authorizationURL);
         }
-
-
     }
 }

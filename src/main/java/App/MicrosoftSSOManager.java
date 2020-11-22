@@ -12,6 +12,7 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
+import javax.servlet.http.HttpSession;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
