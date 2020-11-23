@@ -24,7 +24,10 @@ public class ContactServlet extends HttpServlet {
         if(action != null) {
             String resourceName = request.getParameter("resourceName");
 
-            if(action.equals("edit")) {
+            if(action.equals("add")) {
+                // insert servlet code for CREATE/ADD CONTACT here
+            }
+            else if(action.equals("edit")) {
                 String firstName = request.getParameter("firstName");
                 String lastName = request.getParameter("lastName");
                 String phoneNumber = request.getParameter("phoneNumber");
@@ -47,11 +50,10 @@ public class ContactServlet extends HttpServlet {
         Context context = (Context) request.getSession().getAttribute("Context");
         SSOManagerFactory ssoManager = context.getSsoManager();
 
-        if(action == null) {
+        if (action == null) {
             List<Contact> contacts = ssoManager.getContacts(-1);
             request.setAttribute("contacts", contacts);
-        }
-        else if(action.equals("edit")) {
+        } else if (action.equals("edit")) {
             String resourceName = request.getParameter("resourceName");
 
             Contact contact = ssoManager.getContact(-1, resourceName);

@@ -11,6 +11,38 @@
     <title>Edit Contact</title>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a href="index.jsp">
+            <span class="navbar-brand mb-0 h1">SOEN 387 POC</span>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="mb-0 nav-link active" href="index.jsp"><i class="fas fa-home mr-2"></i>Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="mb-0 nav-link" href="add.jsp"><i class="fas fa-plus mr-2"></i>Add Contact</a>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
+                        <i class="fas fa-user mr-2"></i>Hello, USERNAME
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="#"><i class="fas fa-key mr-2" ></i>Change Password</a>
+                        <a class="dropdown-item" href="#"><i class="fas fa-user-circle mr-2"></i>Update account</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="AuthServlet"><i class="fas fa-sign-out-alt mr-2"></i>Sign Out</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
     <div class="container">
         <div class="col-12 mt-2">
             <div class="h4">Edit Contact</div>
@@ -18,28 +50,29 @@
             <form method="post" action="ContactServlet">
                 <div class="form-group">
                     <label for="firstName">First Name</label>
-                    <input type="text" placeholder="First Name"  id="firstName" class="form-control" name="firstName" value="${contact.firstName}" />
+                    <input type="text" placeholder="First Name"  id="firstName" class="form-control" name="firstName" value="${contact.firstName}" required />
                 </div>
 
                 <div class="form-group">
                     <label for="lastName">Last Name</label>
-                    <input type="text" placeholder="Last Name"  id="lastName" class="form-control" name="lastName" value="${contact.lastName}" />
+                    <input type="text" placeholder="Last Name"  id="lastName" class="form-control" name="lastName" value="${contact.lastName}" required />
                 </div>
 
                 <div class="form-group">
                     <label for="phoneNumber">Phone Number</label>
-                    <input type="text" placeholder="Phone Number"  id="phoneNumber" class="form-control" name="phoneNumber" value="${contact.phoneNumber}" />
+                    <input type="text" placeholder="Phone Number"  id="phoneNumber" class="form-control" name="phoneNumber" value="${contact.phoneNumber}" required />
                 </div>
 
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="text" placeholder="Email"  id="email" class="form-control" name="email" value="${contact.email}" />
+                    <input type="text" placeholder="Email"  id="email" class="form-control" name="email" value="${contact.email}" required />
                 </div>
 
                 <div class="text-center">
                     <input type="hidden" name="resourceName" value="${contact.resourceName}" />
                     <input type="hidden" name="etag" value="${contact.etag}" />
                     <button class="btn btn-primary" type="submit" name="action" value="edit">Save</button>
+                    <button class="btn btn-danger" type="submit" name="action" value="delete">Delete</button>
                 </div>
             </form>
         </div>

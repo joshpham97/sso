@@ -10,7 +10,10 @@ public class Contact implements java.io.Serializable {
     private String etag;
 
     public Contact() {
-
+        firstName = new String();
+        lastName = new String();
+        phoneNumber = new String();
+        email = new String();
     }
 
     public Contact(String firstName, String lastName, String phoneNumber, String email) {
