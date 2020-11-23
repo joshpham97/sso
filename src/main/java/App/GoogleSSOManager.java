@@ -206,10 +206,23 @@ public class GoogleSSOManager extends SSOManagerFactory {
     private Contact toContact(Person person) {
         Contact contact = new Contact();
 
-        contact.setFirstName(person.getNames().get(0).getGivenName());
-        contact.setLastName(person.getNames().get(0).getFamilyName());
-        contact.setPhoneNumber(person.getPhoneNumbers().get(0).getValue());
-        contact.setEmail(person.getEmailAddresses().get(0).getValue());
+        List<Name> names = person.getNames();
+        List<PhoneNumber> phones = person.getPhoneNumbers();
+        List<EmailAddress> emails = person.getEmailAddresses();
+
+        if(names != null && names.size() > 0) {
+            contact.setFirstName(names.get(0).getGivenName());
+            contact.setLastName(names.get(0).getFamilyName());
+        }
+
+        if(phones != null && phones.size() > 0) {
+            contact.setPhoneNumber(phones.get(0).getValue());
+        }
+
+        if(emails != null && emails.size() > 0) {
+            contact.setEmail(emails.get(0).getValue());
+        }
+
         contact.setResourceName(person.getResourceName());
         contact.setEtag(person.getEtag());
 
