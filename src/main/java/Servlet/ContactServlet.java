@@ -25,7 +25,22 @@ public class ContactServlet extends HttpServlet {
             String resourceName = request.getParameter("resourceName");
 
             if(action.equals("add")) {
-                // insert servlet code for CREATE/ADD CONTACT here
+                String firstName = request.getParameter("firstName");
+                String lastName = request.getParameter("lastName");
+                String phoneNumber = request.getParameter("phoneNumber");
+                String email = request.getParameter("email");
+
+                Contact contact = new Contact(firstName, lastName, phoneNumber, email);
+
+                if(ssoManager.createContact(contact))
+                {
+                    response.sendRedirect("index.jsp");
+                }
+                else
+                {
+                    System.out.println("Error creating contact!");
+                    response.sendRedirect("add.jsp");
+                }
             }
             else if(action.equals("edit")) {
                 String firstName = request.getParameter("firstName");

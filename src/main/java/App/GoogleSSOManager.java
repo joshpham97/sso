@@ -128,7 +128,32 @@ public class GoogleSSOManager extends SSOManagerFactory {
 
     @Override
     public boolean createContact(Contact contact) {
-        return false;
+        String firstName = contact.getFirstName();
+        String lastName = contact.getLastName();
+        String phoneNumber = contact.getPhoneNumber();
+        String email = contact.getEmail();
+
+        try {
+            Person contactToCreate = new Person();
+            List names = new ArrayList<>();
+            List phoneNumbers = new ArrayList<>();
+            List emails = new ArrayList<>();
+
+            names.add(new Name().setGivenName(firstName).setFamilyName(lastName));
+            phoneNumbers.add(new PhoneNumber().setValue(phoneNumber));
+            emails.add(new EmailAddress().setValue(email));
+            contactToCreate.setNames(names);
+            contactToCreate.setPhoneNumbers(phoneNumbers);
+            contactToCreate.setEmailAddresses(emails);
+
+            Person createdContact = peopleService.people().createContact(contactToCreate).execute();
+            return true;
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error createContact()!!");
+            return false;
+        }
     }
 
     @Override
@@ -178,24 +203,6 @@ public class GoogleSSOManager extends SSOManagerFactory {
                     .execute();
 
             return response.isEmpty();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    // TODO: finish
-    public boolean addContact(Person person, String name) {
-        try {
-//            Person newPerson = new Person()
-//                    .setNames(Arrays.asList());
-
-            Person personResponse = peopleService.people().createContact(person)
-                    .setPersonFields("names,phoneNumbers")
-                    .execute();
-
-            return personResponse != null;
         } catch(Exception e) {
             e.printStackTrace();
         }
