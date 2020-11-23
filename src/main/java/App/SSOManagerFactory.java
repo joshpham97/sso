@@ -1,5 +1,9 @@
 package App;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.List;
+
 public abstract class SSOManagerFactory {
     String refresh_token;
 
@@ -31,9 +35,9 @@ public abstract class SSOManagerFactory {
     public abstract void getAccessToken(String code);
 
     //Not sure if ids are string or int -- you can change the signature as need
-    public abstract boolean getContacts(int id);
+    public abstract List<Contact> getContacts(int id);
     public abstract boolean createContact(Contact contact);
-    public abstract boolean getContact(int id);
+    public abstract Contact getContact(int id, String resourceName);
     public abstract boolean updateContact(Contact contact);
-    public abstract boolean deleteContact(int id);
+    public abstract boolean deleteContact(int id, String resourceName);
 }
