@@ -15,6 +15,7 @@ import net.minidev.json.parser.ParseException;
 import javax.servlet.http.HttpSession;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 public class MicrosoftSSOManager extends SSOManagerFactory {
     private String appId;
@@ -78,8 +79,8 @@ public class MicrosoftSSOManager extends SSOManagerFactory {
     }
 
     @Override
-    public boolean getContacts(int id) {
-        return false;
+    public List<Contact> getContacts(int id) {
+        return null;
     }
 
     @Override
@@ -88,8 +89,8 @@ public class MicrosoftSSOManager extends SSOManagerFactory {
     }
 
     @Override
-    public boolean getContact(int id) {
-        return false;
+    public Contact getContact(int id, String resourceName) {
+        return null;
     }
 
     @Override
@@ -98,7 +99,7 @@ public class MicrosoftSSOManager extends SSOManagerFactory {
     }
 
     @Override
-    public boolean deleteContact(int id) {
+    public boolean deleteContact(int id, String resourceName) {
         return false;
     }
 }

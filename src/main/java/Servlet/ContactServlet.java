@@ -4,8 +4,8 @@ import App.Contact;
 import App.Context;
 import App.GoogleSSOManager;
 import App.SSOManagerFactory;
-import com.google.api.services.people.v1.model.Person;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,22 +17,48 @@ import java.util.List;
 @WebServlet(name = "ContactServlet")
 public class ContactServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String firstName = request.getParameter("firstName");
-        String lastName = request.getParameter("lastName");
+        String action = request.getParameter("action");
+
         Context context = (Context) request.getSession().getAttribute("Context");
         SSOManagerFactory ssoManager = context.getSsoManager();
 
-        Contact contact = new Contact(firstName, lastName);
-        GoogleSSOManager googleSSOManager = (GoogleSSOManager) ssoManager;
-        if(googleSSOManager.createContact(contact))
-        {
-            System.out.println("Contact has been created!");
+        if(action != null) {
+            String resourceName = request.getParameter("resourceName");
+
+            if(action.equals("add")) {
+                String firstName = request.getParameter("firstName");
+                String lastName = request.getParameter("lastName");
+                String phoneNumber = request.getParameter("phoneNumber");
+                String email = request.getParameter("email");
+
+                Contact contact = new Contact(firstName, lastName, phoneNumber, email);
+                GoogleSSOManager googleSSOManager = (GoogleSSOManager) ssoManager;
+
+                if(googleSSOManager.createContact(contact))
+                {
+                    response.sendRedirect("index.jsp");
+                }
+                else
+                {
+                    System.out.println("Error creating contact!");
+                    response.sendRedirect("add.jsp");
+                }
+            }
+            else if(action.equals("edit")) {
+                String firstName = request.getParameter("firstName");
+                String lastName = request.getParameter("lastName");
+                String phoneNumber = request.getParameter("phoneNumber");
+                String email = request.getParameter("email");
+                String etag = request.getParameter("etag");
+
+                boolean edited = ssoManager.updateContact(new Contact(firstName, lastName, phoneNumber, email, resourceName, etag));
+                response.sendRedirect("index.jsp");
+            }
+            else if(action.equals("delete")) {
+                ssoManager.deleteContact(-1, resourceName);
+                response.sendRedirect("index.jsp");
+            }
         }
-        else
-        {
-            System.out.println("Error!");
-        }
-        response.sendRedirect("index.jsp");
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -40,16 +66,15 @@ public class ContactServlet extends HttpServlet {
 
         Context context = (Context) request.getSession().getAttribute("Context");
         SSOManagerFactory ssoManager = context.getSsoManager();
-        GoogleSSOManager googleSSOManager = (GoogleSSOManager) ssoManager;
 
-        if(action == null) {
-            List<Person> connections = googleSSOManager.getContacts();
-            request.setAttribute("connections", connections);
-        }
-        else if(action.equals("edit")) {
+        if (action == null) {
+            List<Contact> contacts = ssoManager.getContacts(-1);
+            request.setAttribute("contacts", contacts);
+        } else if (action.equals("edit")) {
             String resourceName = request.getParameter("resourceName");
-            Person person = googleSSOManager.getContact(resourceName);
-            request.setAttribute("person", person);
+
+            Contact contact = ssoManager.getContact(-1, resourceName);
+            request.setAttribute("contact", contact);
         }
     }
 }

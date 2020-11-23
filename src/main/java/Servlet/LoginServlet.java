@@ -19,43 +19,33 @@ import java.io.IOException;
 @WebServlet(name = "oAuthServlet")
 public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html");
 
-        try {
-            String idToken = request.getParameter("id_token");
-            GoogleIdToken.Payload payLoad = IdTokenVerifierAndParser.getPayload(idToken);
-            String name = (String) payLoad.get("name");
-            String email = payLoad.getEmail();
-            System.out.println("User name: " + name);
-            System.out.println("User email: " + email);
-
-            HttpSession session = request.getSession(true);
-            session.setAttribute("userName", name);
-            System.out.println("NAME: " + name);
-            request.getServletContext()
-                    .getRequestDispatcher("index.jsp").forward(request, response);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String strSsoType = request.getParameter("sso");
+        String action = request.getParameter("action");
+        HttpSession session = request.getSession();
 
-        if(strSsoType != null){
-            SSOType ssoType = SSOType.valueOf(strSsoType);
+        if(action == null) {
+            String strSsoType = request.getParameter("sso");
 
-            HttpSession session = request.getSession();
-            Context context = new Context();
-            context.setSsoManager(ssoType);
-            session.setAttribute("Context", context);
+            if (strSsoType != null) {
+                SSOType ssoType = SSOType.valueOf(strSsoType);
 
-            SSOManagerFactory ssoManager = context.getSsoManager();
-            String authorizationURL = ssoManager.getAuthorizationURL();
+                Context context = new Context();
+                context.setSsoManager(ssoType);
+                session.setAttribute("Context", context);
 
-            if (authorizationURL != null)
-                response.sendRedirect(authorizationURL);
+                SSOManagerFactory ssoManager = context.getSsoManager();
+                String authorizationURL = ssoManager.getAuthorizationURL();
+
+                if (authorizationURL != null)
+                    response.sendRedirect(authorizationURL);
+            }
+        }
+        else if(action.equals("logout")) {
+            session.removeAttribute("context");
+            response.sendRedirect("login.jsp");
         }
     }
 }
