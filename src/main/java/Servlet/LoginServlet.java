@@ -23,21 +23,29 @@ public class LoginServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String strSsoType = request.getParameter("sso");
+        String action = request.getParameter("action");
+        HttpSession session = request.getSession();
 
-        if(strSsoType != null){
-            SSOType ssoType = SSOType.valueOf(strSsoType);
+        if(action == null) {
+            String strSsoType = request.getParameter("sso");
 
-            HttpSession session = request.getSession();
-            Context context = new Context();
-            context.setSsoManager(ssoType);
-            session.setAttribute("Context", context);
+            if (strSsoType != null) {
+                SSOType ssoType = SSOType.valueOf(strSsoType);
 
-            SSOManagerFactory ssoManager = context.getSsoManager();
-            String authorizationURL = ssoManager.getAuthorizationURL();
+                Context context = new Context();
+                context.setSsoManager(ssoType);
+                session.setAttribute("Context", context);
 
-            if (authorizationURL != null)
-                response.sendRedirect(authorizationURL);
+                SSOManagerFactory ssoManager = context.getSsoManager();
+                String authorizationURL = ssoManager.getAuthorizationURL();
+
+                if (authorizationURL != null)
+                    response.sendRedirect(authorizationURL);
+            }
+        }
+        else if(action.equals("logout")) {
+            session.removeAttribute("context");
+            response.sendRedirect("login.jsp");
         }
     }
 }

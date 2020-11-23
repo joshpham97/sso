@@ -26,21 +26,9 @@
                 </li>
             </ul>
         </div>
-        <div>
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
-                        <i class="fas fa-user mr-2"></i>Hello, USERNAME
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="#"><i class="fas fa-key mr-2" ></i>Change Password</a>
-                        <a class="dropdown-item" href="#"><i class="fas fa-user-circle mr-2"></i>Update account</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="AuthServlet"><i class="fas fa-sign-out-alt mr-2"></i>Sign Out</a>
-                    </div>
-                </li>
-            </ul>
-        </div>
+        <a href="LoginServlet?action=logout">
+            <button class="btn btn-primary"><i class="fas fa-sign-out-alt mr-2"></i>Sign Out</button>
+        </a>
     </nav>
 
     <div class="container">
