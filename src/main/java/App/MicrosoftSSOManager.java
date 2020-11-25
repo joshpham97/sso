@@ -8,6 +8,10 @@ import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.model.Response;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import com.microsoft.graph.models.extensions.IGraphServiceClient;
+import com.microsoft.graph.requests.extensions.GraphServiceClient;
+import com.microsoft.graph.auth.confidentialClient.AuthorizationCodeProvider;
+import com.microsoft.graph.requests.extensions.IContactCollectionPage;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
@@ -15,6 +19,7 @@ import net.minidev.json.parser.ParseException;
 import javax.servlet.http.HttpSession;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MicrosoftSSOManager extends SSOManagerFactory {
@@ -22,6 +27,8 @@ public class MicrosoftSSOManager extends SSOManagerFactory {
     private String appSecret;
     private String appScopes;
 
+
+    private AuthorizationCodeProvider authProvider;
     private OAuth20Service service;
     private OAuth2AccessToken accessToken;
 
@@ -80,26 +87,100 @@ public class MicrosoftSSOManager extends SSOManagerFactory {
 
     @Override
     public List<Contact> getContacts(int id) {
+
+        IGraphServiceClient graphClient = GraphServiceClient.builder().authenticationProvider(authProvider).buildClient();
+
+        IContactCollectionPage contacts = graphClient.me().contacts()
+                .buildRequest()
+                .get();
         return null;
     }
 
     @Override
     public boolean createContact(Contact contact) {
-        return false;
+        String firstName = contact.getFirstName();
+        String lastName = contact.getLastName();
+        String phoneNumber = contact.getPhoneNumber();
+        String email = contact.getEmail();
+        try {
+
+            IGraphServiceClient graphClient = GraphServiceClient.builder().authenticationProvider( authProvider ).buildClient();
+
+            Contact contactToCreate = new Contact();
+
+            contactToCreate.setFirstName(firstName);
+            contactToCreate.setLastName(lastName);
+            contactToCreate.setPhoneNumber(phoneNumber);
+            contactToCreate.setEmail(email);
+
+            graphClient.me().contacts()
+                    .buildRequest()
+                    .post(contactToCreate);
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error createContact()!!");
+            return false;
+        }
     }
 
     @Override
     public Contact getContact(int id, String resourceName) {
-        return null;
+        try {
+
+
+            IGraphServiceClient graphClient = GraphServiceClient.builder().authenticationProvider(authProvider).buildClient();
+
+            com.microsoft.graph.models.extensions.Contact contact = graphClient.me().contacts("{id}")
+                    .buildRequest()
+                    .get();
+
+            Contact person = new Contact();
+            person.setFirstName(contact.givenName);
+            person.setLastName(contact.surname);
+            person.setPhoneNumber(contact.mobilePhone);
+            person.setEmail(contact.emailAddresses.get(0).address);
+            return person;
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
     }
 
     @Override
     public boolean updateContact(Contact contact) {
-        return false;
+        try{
+            IGraphServiceClient graphClient = GraphServiceClient.builder().authenticationProvider( authProvider ).buildClient();
+
+            Contact contactToUpdate = new Contact();
+
+
+            graphClient.me().contacts("{id}")
+                    .buildRequest()
+                    .patch(contactToUpdate);
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
     public boolean deleteContact(int id, String resourceName) {
-        return false;
+
+        try{
+            IGraphServiceClient graphClient = GraphServiceClient.builder().authenticationProvider( authProvider ).buildClient();
+
+            graphClient.me().contacts("{id}")
+                    .buildRequest()
+                    .delete();
+            return true;
+        }
+       catch (Exception e) {
+           return false;
+       }
     }
 }

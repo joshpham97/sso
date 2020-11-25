@@ -1,6 +1,6 @@
 package App;
 
-public class Contact implements java.io.Serializable {
+public class Contact extends com.microsoft.graph.models.extensions.Contact implements java.io.Serializable {
     private String firstName;
     private String lastName;
     private String phoneNumber;
